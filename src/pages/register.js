@@ -1,27 +1,29 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { auth } from './firebase';
+import { auth } from '../firebase';
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Register() {
     
-    const [username, setUsername] = useState(null);
+    const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
     async function handleSubmit(event) {
-        event.preventDefault();
         try {
-            const data = await signInWithEmailAndPassword(auth, username, password);
-            setUser(data)
-            console.log(user)
+            const res = await createUserWithEmailAndPassword(auth, email, password);
+
+            
+           // navigate('/login');
+
         } catch (err) {
-            console.error(err);
-            alert(err.message);
+          console.error(err);
+          alert(err.message);
         }
     }
 
-    function handleChangeUsername(event) {
-        setUsername(event.target.value);
+    function handleChangeEmail(event) {
+        setEmail(event.target.value);
     }
 
     function handleChangePassword(event) {
@@ -30,11 +32,12 @@ export default function Login() {
 
     return (
         <div>
+            <h2>Espace client - Inscription</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label className="input">
-                        Nom d'utilisateur :
-                        <input type="text" name="username" onChange={handleChangeUsername}/>
+                        Email :
+                        <input type="text" name="email" onChange={handleChangeEmail}/>
                     </label>
                 </div>
                 <div>
@@ -43,7 +46,7 @@ export default function Login() {
                         <input type="password" name="password" onChange={handleChangePassword}/>
                     </label>
                 </div>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Inscription" />
             </form>
         </div>
     )
