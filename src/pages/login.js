@@ -1,21 +1,18 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { auth } from '../firebase';
+import { auth, appFirebase } from '../firebase';
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();
         try {
             const data = await signInWithEmailAndPassword(auth, email, password);
-            setUser(data)
-            console.log(user)
             navigate('/dashboard');
         } catch (err) {
             console.error(err);
@@ -31,12 +28,13 @@ export default function Login() {
         setPassword(event.target.value);
     }
 
-    function handleClick() {
+    function handleRegister() {
         navigate('/register');
     }
+
     return (
         <div>
-            <h2>Espace client</h2>
+            <h2>Espace client - Connexion</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label className="input">
@@ -52,8 +50,8 @@ export default function Login() {
                 </div>
                 <input type="submit" value="Connexion" />
             </form>
-            <button type="button" onClick={handleClick}>
-                S'inscrire
+            <button type="button" onClick={handleRegister}>
+                Vous n'avez pas de compte ? S'inscrire
             </button>
         </div>
     )
