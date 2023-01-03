@@ -7,10 +7,22 @@ export default function Login() {
     
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-
-    const [load, setLoad] = useState(true);
+    const [supportsPWA, setSupportsPWA] = useState(false);
+    const [promptInstall, setPromptInstall] = useState(null);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const handler = e => {
+            e.preventDefault();
+            console.log("we are being triggered :D");
+            setSupportsPWA(true);
+            setPromptInstall(e);
+          };
+          window.addEventListener("beforeinstallprompt", handler);
+      
+          return () => window.removeEventListener("transitionend", handler);
+    }, [])
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -36,18 +48,17 @@ export default function Login() {
         navigate('/register');
     }
 
-    useEffect(() => {
-        setTimeout(() => {
-            setLoad(false)
-          }, 1500)
-    }, [])
+    function installApp(event) {
+        event.preventDefault();
+        if (!promptInstall) {
+            return;
+        }
+        promptInstall.prompt();
+    
+  
+    }
 
-    if(load) {
-        return <div style={{textAlign:"center"}}>
-            <p>Site en chargement ...</p>
-        </div>
-    } else {
-        return <div>
+    return <div>
             <h2>Espace client - Connexion</h2>
             <form onSubmit={handleSubmit}>
                 <div>
@@ -67,6 +78,8 @@ export default function Login() {
             <button type="button" onClick={handleRegister}>
                 Vous n'avez pas de compte ? S'inscrire
             </button>
+            <button type="button" onClick={installApp}>
+                Installer
+            </button>
         </div>
-    }
 }
